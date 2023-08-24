@@ -1,0 +1,89 @@
+package com.example;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+class pair
+{
+	int row;
+	  int col;
+	  int tm;
+	  
+	  pair(int _row, int _col, int _tm) {
+	    this.row = _row;
+	    this.col = _col;
+	    this.tm = _tm;
+	  }
+
+}
+public class RottenOranges {
+	
+	public int orangesRotting(int[][] grid) {
+		
+		Queue<pair> queue=new LinkedList<pair>();
+		int n=grid.length;
+		int m=grid[0].length;
+		int cntFresh=0;
+		
+		int[][] visited=new int[n][m];
+		for(int i=0;i<n;i++)
+		{
+			for(int j=0;j<m;j++)
+			{
+				if(grid[i][j]==2)
+				{
+//					add in the que of row cl=ol and initial time that is 0
+					queue.add(new pair(i, j, 0));
+//					make visited array to 2
+					visited[i][j]=2;
+				}
+				else {
+					visited[i][j]=0;
+				}
+//				take a variable and check if the orange is fresh then increment the variable
+				if(grid[i][j]==1) cntFresh++;
+			}
+			
+		}
+//		for time 
+		int tm = 0;
+	    // delta row and delta column
+	    int drow[] = {-1, 0, +1, 0};
+	    int dcol[] = {0, 1, 0, -1}; 
+	    int cnt = 0;
+	    while(!queue.isEmpty())
+	    {
+	    	int row=queue.peek().row;
+	    	int col=queue.peek().col;
+	    	int time=queue.peek().tm;
+	    	queue.remove();
+	    	tm = Math.max(tm, time);
+	    	for (int i = 0; i < 4; i++) {
+	    		int nrow=row+drow[i];
+	    		int ncol=col+dcol[i];
+	    		// check for valid coordinates and 
+	            // then for unvisited fresh orange
+	    		if(nrow>=0 && nrow<=n && ncol>=0 && ncol<=m && grid[nrow][ncol]==1 && visited[nrow][ncol]==0)
+	    		{
+//	    			push the new row, col with time increased to 1;
+	    			queue.add(new pair(nrow, ncol, time+1));
+	    			visited[nrow][ncol]=2;
+	    			cnt++;
+	    		}
+	    		
+	    	}
+	    }
+	 // if all oranges are not rotten
+	    if (cnt != cntFresh) return -1;
+	    return tm;
+		
+	}
+	public static void main(String[] args) {
+		
+	     int[][] grid =  {{0,1,2},{0,1,2},{2,1,1}};
+	    RottenOranges objOranges=new RottenOranges();
+	    int ans = objOranges.orangesRotting(grid);
+	    System.out.println(ans);
+	  }
+
+}
